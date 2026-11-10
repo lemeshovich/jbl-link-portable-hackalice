@@ -1,0 +1,5 @@
+#!/bin/sh
+# Route through softvol (volume buttons) into hmpp (Harman DSP), which is the
+# path the firmware uses for Bluetooth; plain plug:softvol bypasses the DSP
+# and sounds noticeably flatter.
+ALSA_CONFIG_PATH=/data/ytm/my.conf exec /data/ytm/bin/ytm-play -D ytmout "$1"
