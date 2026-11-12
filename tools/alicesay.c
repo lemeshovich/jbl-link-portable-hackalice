@@ -5,6 +5,8 @@
  * This is the same server action the YandexStation Home Assistant
  * integration sends over glagol to make the speaker say arbitrary text.
  *
+ * -f  the smart-home phrase scenario quasar.iot.repeat_phrase instead:
+ *     not filtered, but the microphone stays closed afterwards
  * -c  fallback: QuasarMessage.vins_call(79) = VinsCall { text_input(1) }
  *
  * Field numbers come from the descriptors embedded in this firmware's maind.
@@ -31,12 +33,14 @@ int main(int argc, char **argv)
     const char *text = "\xd0\x92\xd0\xba\xd0\xbb\xd1\x8e\xd1\x87\xd0\xb0\xd1\x8e"; /* "Включаю" */
     int use_call = 0, port = 9875;
     int silent = -1, reset = -1, interaction = -1;   /* -1 = field omitted */
+    int phrase = 0;   /* -f: quasar.iot.repeat_phrase instead of repeat_after_me */
     for (int i = 1; i < argc; i++) {
         if (!strcmp(argv[i], "-c")) use_call = 1;
         else if (!strcmp(argv[i], "-p") && i + 1 < argc) port = atoi(argv[++i]);
         else if (!strcmp(argv[i], "-s") && i + 1 < argc) silent = atoi(argv[++i]);
         else if (!strcmp(argv[i], "-r") && i + 1 < argc) reset = atoi(argv[++i]);
         else if (!strcmp(argv[i], "-i") && i + 1 < argc) interaction = atoi(argv[++i]);
+        else if (!strcmp(argv[i], "-f")) phrase = 1;
         else text = argv[i];
     }
 
@@ -51,11 +55,17 @@ int main(int argc, char **argv)
         ml = pb(msg, 0, 79, inner, il);
     } else {
         char js[2048];
+        /* The smart-home phrase scenario (-f) is what Home Assistant uses for
+         * media_content_type "text": it is not filtered and takes long texts,
+         * unlike the dialog scenario repeat_after_me. */
         snprintf(js, sizeof(js),
             "{\"type\":\"server_action\",\"name\":\"update_form\",\"payload\":{"
-            "\"form_update\":{\"name\":\"personal_assistant.scenarios.repeat_after_me\","
-            "\"slots\":[{\"type\":\"string\",\"name\":\"request\",\"value\":\"%s\"}]},"
-            "\"resubmit\":true}}", text);
+            "\"form_update\":{\"name\":\"%s\","
+            "\"slots\":[{\"type\":\"string\",\"name\":\"%s\",\"value\":\"%s\"}]},"
+            "\"resubmit\":true}}",
+            phrase ? "personal_assistant.scenarios.quasar.iot.repeat_phrase"
+                   : "personal_assistant.scenarios.repeat_after_me",
+            phrase ? "phrase_to_repeat" : "request", text);
         il = pb(inner, 0, 1, js, strlen(js));
         /* VinsServerAction: reset_session=2, has_interaction=3, is_silent=5 */
         if (reset >= 0)       il = pi(inner, il, 2, (unsigned)reset);
@@ -71,8 +81,9 @@ int main(int argc, char **argv)
     if (fd < 0 || connect(fd, (struct sockaddr *)&a, sizeof(a)) != 0) { perror("connect"); return 1; }
     unsigned char h[4] = { ml & 0xff, (ml >> 8) & 0xff, (ml >> 16) & 0xff, (ml >> 24) & 0xff };
     if (write(fd, h, 4) != 4 || write(fd, msg, ml) != (ssize_t)ml) { perror("write"); close(fd); return 1; }
-    fprintf(stderr, "sent %s silent=%d reset=%d interaction=%d (%zu bytes)\n",
-            use_call ? "vins_call(79)" : "vins_server_action(49)", silent, reset, interaction, ml);
+    fprintf(stderr, "sent %s%s silent=%d reset=%d interaction=%d (%zu bytes)\n",
+            use_call ? "vins_call(79)" : "vins_server_action(49)",
+            (!use_call && phrase) ? " [repeat_phrase]" : "", silent, reset, interaction, ml);
     usleep(300000);
     close(fd);
     return 0;

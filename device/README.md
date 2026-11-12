@@ -10,7 +10,7 @@
 
 `jbl-autostart/` combines the framework from PR #141 with our hooks; see
 [jbl-autostart/NOTICE.md](jbl-autostart/NOTICE.md) and
-[docs/03](../docs/03-persistence-and-autostart.md).
+[docs/03](../docs/en/03-persistence-and-autostart.md).
 
 Hooks must be owned by root with mode 700 or 755, or `run.sh` refuses to run
 them.

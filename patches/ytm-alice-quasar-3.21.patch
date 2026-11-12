@@ -211,10 +211,10 @@ index ba401dc..822f4e9 100644
  	source := proto(state[10].b)
 diff --git a/source/legacy_voice_test.go b/source/legacy_voice_test.go
 new file mode 100644
-index 0000000..ee9663f
+index 0000000..59faddb
 --- /dev/null
 +++ b/source/legacy_voice_test.go
-@@ -0,0 +1,64 @@
+@@ -0,0 +1,77 @@
 +package main
 +
 +import (
@@ -278,6 +278,19 @@ index 0000000..ee9663f
 +		t.Fatalf("gate timeout %v", d)
 +	}
 +	announceGateOpen()
++}
++
++func TestLikedVoiceCommand(t *testing.T) {
++	v := defaultSettings()
++	v.VoiceCommands = map[string]string{"включи музыку": "liked"}
++	s := &Server{settings: &v}
++	a, q, ok := s.voiceAction("Алиса, включи музыку")
++	if !ok || a != "play" || q != "мои лайки" {
++		t.Fatalf("voiceAction = %q %q %v", a, q, ok)
++	}
++	if err := validateSettings(v); err != nil {
++		t.Fatalf("liked must be an allowed action: %v", err)
++	}
 +}
 diff --git a/source/main.go b/source/main.go
 index f88efd2..8506253 100644
@@ -625,3 +638,44 @@ index f88efd2..8506253 100644
  	debug.SetMemoryLimit(48 << 20)
  	debug.SetGCPercent(50)
  	if e := os.MkdirAll(dataDir(), 0700); e != nil {
+diff --git a/source/playback_options.go b/source/playback_options.go
+index 23a894f..cac5ea7 100644
+--- a/source/playback_options.go
++++ b/source/playback_options.go
+@@ -155,6 +155,10 @@ func (s *Server) voiceAction(text string) (string, string, bool) {
+ 	settings := s.getSettings()
+ 	// Prefer exact aliases, then the longest custom search prefix.
+ 	if action, ok := settings.VoiceCommands[q]; ok {
++		if action == "liked" {
++			// A fixed phrase for "play my likes", e.g. a bare "включи музыку".
++			return "play", "мои лайки", true
++		}
+ 		return action, "", true
+ 	}
+ 	prefixes := []string{}
+diff --git a/source/settings.go b/source/settings.go
+index 8a6088c..fc2dc88 100644
+--- a/source/settings.go
++++ b/source/settings.go
+@@ -89,7 +89,7 @@ func validateSettings(value Settings) error {
+ 			if !strings.HasSuffix(phrase, " {query}") || strings.Count(phrase, "{query}") != 1 {
+ 				return errors.New("команда поиска должна заканчиваться на {query}")
+ 			}
+-		case "pause", "resume", "stop", "next", "previous", "what", "recommendations", "shuffle-on", "shuffle-off":
++		case "pause", "resume", "stop", "next", "previous", "what", "recommendations", "liked", "shuffle-on", "shuffle-off":
+ 			if strings.ContainsAny(phrase, "{}") {
+ 				return errors.New("{query} используется только для поиска")
+ 			}
+diff --git a/source/web/app.js b/source/web/app.js
+index 0af9082..cdafb9a 100644
+--- a/source/web/app.js
++++ b/source/web/app.js
+@@ -262,7 +262,7 @@ $('connect-account').onclick=()=>perform($('connect-account'),async()=>{
+  $('cookie-file').value='';$('account-choice').hidden=true;loadedLiked=false;loadedPlaylists=false;
+  notice('Подключён профиль '+selected.name+'.',true);await request('/api/state');
+ });
+-const voiceActions={play:'Найти и включить',recommendations:'Рекомендации',pause:'Пауза',resume:'Продолжить',stop:'Стоп',next:'Следующий трек',previous:'Предыдущий трек',what:'Название трека','shuffle-on':'Перемешать','shuffle-off':'По порядку'};
++const voiceActions={play:'Найти и включить',recommendations:'Рекомендации',liked:'Мои лайки',pause:'Пауза',resume:'Продолжить',stop:'Стоп',next:'Следующий трек',previous:'Предыдущий трек',what:'Название трека','shuffle-on':'Перемешать','shuffle-off':'По порядку'};
+ function addVoiceAlias(phrase='',action='play') {
+  const row=document.createElement('div');row.className='voice-alias';
+  const input=document.createElement('input');input.type='text';input.maxLength=120;input.placeholder='сыграй {query}';input.value=phrase;input.setAttribute('aria-label','Фраза голосовой команды');

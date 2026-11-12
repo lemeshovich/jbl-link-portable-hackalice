@@ -21,6 +21,7 @@ Added in this repository (MIT, see the top-level `LICENSE`):
 - `build-plugin.sh`: builds the plugin with Zig instead of clang and ELF lld
 - `hooks.d/05-no-ota.sh`: OTA protection, re-applied on every boot
 - `hooks.d/30-ytm.sh`: installs and starts the ytm-alice systemd unit
+- `hooks.d/40-llm.sh`: installs and starts the llm-alice systemd unit
 - `plugins.conf`, `fluent-service.cfg`, `managed-by-jbl-link-portable`: the
   configuration as installed by hand on the device
 
