@@ -41,7 +41,7 @@ protobuf while the control channel stays JSON, and Yandex then rejects the
 session, so recognition stops working altogether.
 
 What replaced it on this firmware, and how the two compare:
-[15, llm-alice](15-llm-alice.md#compared-with-quasar-bridge).
+[14, llm-alice](14-llm-alice.md#compared-with-quasar-bridge).
 
 Reported upstream as
 [issue #46](https://github.com/skrashevich/quasar-bridge/issues/46). Until the

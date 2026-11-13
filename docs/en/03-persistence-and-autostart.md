@@ -40,7 +40,7 @@ same file on every run: [device/jbl-autostart/build-plugin.sh](../../device/jbl-
 | `05-no-ota.sh` | Re-applies the OTA protection at every boot, see [04](04-ota-protection.md) |
 | `10-ssh.sh` | From the PR: starts Dropbear |
 | `30-ytm.sh` | Installs `ytm-alice.service` into `/run` and starts it without waiting |
-| `40-llm.sh` | Installs `llm-alice.service` (`Restart=on-failure`) the same way, see [15](15-llm-alice.md) |
+| `40-llm.sh` | Installs `llm-alice.service` (`Restart=on-failure`) the same way, see [14](14-llm-alice.md) |
 | `90-marker.sh` | From the PR: writes the boot id, proving that the hooks ran |
 
 Creating `/data/jbl-autostart/ytm-off` makes `30-ytm.sh` skip ytm-alice, and
