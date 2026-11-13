@@ -1,7 +1,7 @@
 # llm-alice
 
 Answers from an LLM in Alice's own voice on quasar 3.21. How it works, routing,
-configuration and limits: [docs/en/15](../docs/en/15-llm-alice.md).
+configuration and limits: [docs/en/14](../docs/en/14-llm-alice.md).
 
 ```
 sh build.sh

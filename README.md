@@ -29,7 +29,7 @@ On a speaker that has been switched on normally, with nothing typed anywhere:
   and the like, and everything Alice herself cannot answer go to Gemini (or any
   OpenAI-compatible model), and Alice reads the answer in her own voice. The
   conversation continues without repeating the wake word. See
-  [llm-alice](docs/en/15-llm-alice.md).
+  [llm-alice](docs/en/14-llm-alice.md).
 - Root SSH (key only), automatic start of everything after power-on, and OTA
   updates blocked in three layers.
 - Bluetooth playback and Alice herself keep working as before.
@@ -52,9 +52,6 @@ version above.
 
 - You can make your speaker unusable. Everything here was done on one device and
   is published as notes, not as a supported product.
-- YouTube refuses to stream to addresses of cloud providers. If the speaker
-  reaches the internet through a VPN or proxy in a data centre, search works but
-  playback does not. See [Network](docs/en/12-network.md).
 - Using YouTube this way may break its terms of service.
 
 ## Documentation
@@ -70,10 +67,9 @@ version above.
 9. [ytm-alice port](docs/en/09-ytm-alice-port.md)
 10. [Voice control on legacy firmware](docs/en/10-voice-control.md)
 11. [Quasar Bridge (and why it does not fit)](docs/en/11-quasar-bridge.md)
-12. [Network](docs/en/12-network.md)
-13. [Troubleshooting](docs/en/13-troubleshooting.md)
-14. [Hardware research notes](docs/en/14-hardware-research.md)
-15. [llm-alice: answers from an LLM in Alice's voice](docs/en/15-llm-alice.md)
+12. [Troubleshooting](docs/en/12-troubleshooting.md)
+13. [Hardware research notes](docs/en/13-hardware-research.md)
+14. [llm-alice: answers from an LLM in Alice's voice](docs/en/14-llm-alice.md)
 
 ## Repository layout
 
@@ -107,7 +103,7 @@ The order matters, because each step relies on the previous one.
 5. Log in to YouTube once with `ytm-alice login tv`.
 6. Optionally, for the LLM: put an API key into `/data/llm/key`, the binary into
    `/data/llm/`, and the `40-llm.sh` hook next to the others:
-   [docs/15](docs/en/15-llm-alice.md#installation). Then reboot.
+   [docs/14](docs/en/14-llm-alice.md#installation). Then reboot.
 
 ## Credits
 
