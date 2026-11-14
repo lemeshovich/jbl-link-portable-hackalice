@@ -46,7 +46,8 @@ On a speaker that has been switched on normally, with nothing typed anywhere:
 Newer firmware differs in places that matter here (its quasar has the
 `AliceCapability` IPC that this one lacks). The changes are written to detect the
 old firmware and leave newer ones alone, but they have only been tested on the
-version above.
+version above. llm-alice has also been confirmed by
+[another user](https://github.com/skrashevich/quasar-bridge/issues/46#issuecomment-6870619714) on a JBL Link Music with December 2025 firmware.
 
 ## Read first
 
