@@ -27,6 +27,16 @@ speaker.
 - **"Алиса, начни новый разговор"** (or "забудь разговор", "новая тема") forgets
   the conversation.
 
+## Where it has been tested
+
+| Speaker | Firmware | Model | Who |
+|---|---|---|---|
+| JBL Link Portable | `1.80.0.16.1086317237.20210928` (quasar 3.21) | Gemini | this project |
+| JBL Link Music | `1.80.0.228.3676124705.20251219` (December 2025) | Groq, `openai/gpt-oss-120b` | [another user](https://github.com/skrashevich/quasar-bridge/issues/46#issuecomment-6870619714) |
+
+On the Link Music the `40-llm.sh` hook worked on the same autostart framework without
+changes, and the daemon started by itself after the speaker was unplugged and plugged back in.
+
 ## How it works
 
 `llm-alice` sits next to Alice, not between her and Yandex. It reads Alice's
